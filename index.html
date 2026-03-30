@@ -275,13 +275,11 @@
     .thumb-category-label {
       position: absolute;
       top: 12px;
-      right: 12px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      left: 12px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
       z-index: 3;
     }
 
@@ -566,10 +564,6 @@
       const card = document.createElement('div');
       card.className = 'thumbnail-card';
 
-      const badgeHTML = thumb.badge
-        ? `<div class="thumb-badge ${badgeClasses[thumb.badge] || 'new-episode'}">${thumb.badge === 'New Episode' ? '● ' : ''}${thumb.badge}</div>`
-        : '';
-
       const episodesText = thumb.episodes ? `${thumb.episodes} Episodes` : '';
       const viewsText = thumb.views && thumb.views !== '0'
         ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> ${thumb.views}`
@@ -581,7 +575,6 @@
       card.innerHTML = `
         <div class="thumb-image-wrapper">
           <img class="thumb-image" src="${thumb.image_url}" alt="${thumb.title || 'Thumbnail'}">
-          ${badgeHTML}
           <span class="thumb-category-label ${catClass}">${catLabel}</span>
         </div>
         <div class="thumb-info">
