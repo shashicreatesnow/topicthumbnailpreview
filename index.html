@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Topic Thumbnail Preview</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* Phone frame container */
+    .phone-frame {
+      width: 430px;
+      height: 932px;
+      margin: 0 auto;
+      background-color: #0A0A0A;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #FFFFFF;
+      border-radius: 40px;
+      border: 3px solid #222;
+    }
+
+    /* ===== STATUS BAR ===== */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px 6px;
+      flex-shrink: 0;
+    }
+
+    .status-bar-left {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .camera-cutout {
+      width: 22px;
+      height: 22px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    .status-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-bar-right svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ===== TOP NAV ===== */
+    .top-nav {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px 12px;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .app-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #00C9A7, #00B4D8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 22px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .search-bar {
+      flex: 1;
+      background: #1A1A1A;
+      border: 1px solid #2A2A2A;
+      border-radius: 24px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .search-bar svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.5;
+    }
+
+    .profile-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #1A1A1A;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .profile-icon svg {
+      width: 22px;
+      height: 22px;
+      color: #777;
+    }
+
+    /* ===== EPISODE CARDS ROW ===== */
+    .episode-cards-row {
+      padding: 4px 16px 10px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+
+    .episode-cards-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .episode-small-card {
+      min-width: 145px;
+      flex-shrink: 0;
+    }
+
+    .episode-small-card img {
+      width: 145px;
+      height: 82px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .episode-small-card .card-title {
+      font-size: 12px;
+      color: #ccc;
+      margin-top: 6px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .episode-small-card .card-episode {
+      font-size: 11px;
+      color: #888;
+      margin-top: 3px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .episode-small-card .card-episode svg {
+      width: 10px;
+      height: 10px;
+    }
+
+    /* ===== BUSINESS SECTION ===== */
+    .section-header {
+      padding: 18px 16px 14px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* ===== THUMBNAIL SCROLL ===== */
+    .thumbnail-scroll-wrapper {
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .thumbnail-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .thumbnail-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .thumb-spacer {
+      min-width: 16px;
+      flex-shrink: 0;
+    }
+
+    .thumbnail-card {
+      flex-shrink: 0;
+      width: 210px;
+      height: 420px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: #1A1A1A;
+      scroll-snap-align: start;
+    }
+
+    .thumbnail-card .thumb-image-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .thumbnail-card .thumb-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Gradient overlay */
+    .thumbnail-card .thumb-image-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40%;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Badge */
+    .thumb-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 2;
+    }
+
+    .thumb-badge.new-episode {
+      background: #1DB954;
+      color: #000;
+    }
+
+    .thumb-badge.newly-added {
+      background: #FFD700;
+      color: #000;
+    }
+
+    .thumb-badge.trending {
+      background: #FF4444;
+      color: #fff;
+    }
+
+    .thumb-badge.popular {
+      background: #FF8C00;
+      color: #000;
+    }
+
+    /* Info overlay */
+    .thumb-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 14px;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .thumb-episodes {
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .thumb-views {
+      font-size: 13px;
+      font-weight: 500;
+      color: #ddd;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .thumb-views svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* ===== BOTTOM SECTION ===== */
+    .bottom-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .category-row {
+      padding: 20px 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-row .cat-icon {
+      font-size: 20px;
+    }
+
+    .category-row .cat-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    /* Small colored preview strip */
+    .preview-strip {
+      padding: 0 16px 8px;
+      display: flex;
+      gap: 8px;
+      overflow: hidden;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .preview-strip-item {
+      width: 80px;
+      height: 24px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      flex-shrink: 0;
+      background: #1A1A1A;
+      border-top: 1px solid #222;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0 28px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: #555;
+    }
+
+    .nav-item.active {
+      color: #00C9A7;
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-item .nav-label {
+      font-size: 10px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-frame">
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <div class="status-bar-left">9:30</div>
+      <div class="camera-cutout"></div>
+      <div class="status-bar-right">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M12 3C7.8 3 3.7 4.4 1 7l2 2c2.2-2.1 5.2-3.4 9-3.4s6.8 1.3 9 3.4l2-2c-2.7-2.6-6.8-4-11-4zm0 6c-2.7 0-5.2 1-7 2.6l2 2c1.4-1.3 3.2-2 5-2s3.6.7 5 2l2-2c-1.8-1.6-4.3-2.6-7-2.6zm0 6c-1.4 0-2.6.5-3.5 1.4L12 20l3.5-3.6c-.9-.9-2.1-1.4-3.5-1.4z"/></svg>
+        <svg viewBox="0 0 24 24" fill="white"><path d="M2 22h20V2z M17 7v10h3V7h-3zm-4 3v7h3v-7h-3zm-4 3v4h3v-4H9z"/></svg>
+        <svg viewBox="0 0 24 24" fill="white"><path d="M17 4h-3V2h-4v2H7v18h10V4zm-2 16H9V6h6v14z"/></svg>
+      </div>
+    </div>
+
+    <!-- TOP NAV -->
+    <div class="top-nav">
+      <div class="app-logo">M</div>
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span>Search "Earning Money"</span>
+      </div>
+      <div class="profile-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+
+    <!-- EPISODE CARDS -->
+    <div class="episode-cards-row">
+      <div class="episode-small-card">
+        <img src="https://www.figma.com/api/mcp/asset/fdd588db-bbda-41f5-bf16-7eabed4e4183" alt="Episode thumbnail">
+        <div class="card-title">Acha YouTube content karana see...</div>
+        <div class="card-episode">Episode 4 <svg viewBox="0 0 24 24" fill="#888"><path d="M10 17l5-5-5-5v10z"/></svg></div>
+      </div>
+      <div class="episode-small-card">
+        <img src="https://www.figma.com/api/mcp/asset/e69bf0e3-4212-485f-a581-53a565e1a4e3" alt="Episode thumbnail">
+        <div class="card-title">Acha YouTube content karana see...</div>
+        <div class="card-episode">Episode 4 <svg viewBox="0 0 24 24" fill="#888"><path d="M10 17l5-5-5-5v10z"/></svg></div>
+      </div>
+      <div class="episode-small-card">
+        <img src="https://www.figma.com/api/mcp/asset/a7c1b163-5e4b-4f5d-a8bc-fc6b084c9cdb" alt="Episode thumbnail">
+        <div class="card-title">Acha YouTube content karana see...</div>
+        <div class="card-episode">Episode 4 <svg viewBox="0 0 24 24" fill="#888"><path d="M10 17l5-5-5-5v10z"/></svg></div>
+      </div>
+    </div>
+
+    <!-- BUSINESS SECTION -->
+    <div class="section-header">
+      <div class="section-title">Business</div>
+    </div>
+
+    <div class="thumbnail-scroll-wrapper">
+    <div class="thumbnail-scroll" id="thumbnailScroll">
+      <div class="thumb-spacer"></div>
+      <!-- Cards loaded dynamically from Supabase -->
+      <div class="thumb-spacer"></div>
+    </div>
+    </div>
+
+    <!-- BOTTOM SECTION -->
+    <div class="bottom-section">
+      <div class="category-row">
+        <span class="cat-icon">🏪</span>
+        <span class="cat-title">Low Cost Business Ideas</span>
+      </div>
+
+      <div class="preview-strip">
+        <div class="preview-strip-item" style="background: #E85D2A;"></div>
+        <div class="preview-strip-item" style="background: #2D8B4E;"></div>
+        <div class="preview-strip-item" style="background: #C4A82B;"></div>
+      </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+      <a class="nav-item active" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span class="nav-label">Home</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <span class="nav-label">Explore</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span class="nav-label">New</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        <span class="nav-label">My Libraries</span>
+      </a>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://sluceerjagdurervugah.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const badgeClasses = {
+      'New Episode': 'new-episode',
+      'Newly Added': 'newly-added',
+      'Trending': 'trending',
+      'Popular': 'popular'
+    };
+
+    function createCard(thumb) {
+      const card = document.createElement('div');
+      card.className = 'thumbnail-card';
+
+      const badgeHTML = thumb.badge
+        ? `<div class="thumb-badge ${badgeClasses[thumb.badge] || 'new-episode'}">${thumb.badge === 'New Episode' ? '● ' : ''}${thumb.badge}</div>`
+        : '';
+
+      const episodesText = thumb.episodes ? `${thumb.episodes} Episodes` : '';
+      const viewsText = thumb.views && thumb.views !== '0'
+        ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> ${thumb.views}`
+        : '';
+
+      card.innerHTML = `
+        <div class="thumb-image-wrapper">
+          <img class="thumb-image" src="${thumb.image_url}" alt="${thumb.title || 'Thumbnail'}">
+          ${badgeHTML}
+        </div>
+        <div class="thumb-info">
+          <span class="thumb-episodes">${episodesText}</span>
+          <span class="thumb-views">${viewsText}</span>
+        </div>
+      `;
+      return card;
+    }
+
+    async function loadThumbnails() {
+      const scroll = document.getElementById('thumbnailScroll');
+      const lastSpacer = scroll.querySelector('.thumb-spacer:last-child');
+
+      const { data, error } = await supabase
+        .from('thumbnails')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Failed to load thumbnails:', error.message);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        // Show placeholder message if no thumbnails yet
+        const placeholder = document.createElement('div');
+        placeholder.style.cssText = 'display:flex;align-items:center;justify-content:center;min-width:200px;height:420px;border:2px dashed #333;border-radius:16px;color:#555;font-size:14px;text-align:center;padding:20px;';
+        placeholder.textContent = 'No thumbnails yet. Upload some using: node upload.js /path/to/folder';
+        scroll.insertBefore(placeholder, lastSpacer);
+        return;
+      }
+
+      data.forEach(thumb => {
+        const card = createCard(thumb);
+        scroll.insertBefore(card, lastSpacer);
+      });
+    }
+
+    loadThumbnails();
+  </script>
+
+</body>
+</html>
