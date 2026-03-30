@@ -178,15 +178,42 @@
       height: 10px;
     }
 
-    /* ===== BUSINESS SECTION ===== */
+    /* ===== SECTION HEADER ===== */
     .section-header {
       padding: 18px 16px 14px;
       flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .section-title {
       font-size: 24px;
       font-weight: 700;
+    }
+
+    .shuffle-btn {
+      background: #1A1A1A;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 8px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+    }
+
+    .shuffle-btn:active {
+      background: #2A2A2A;
+    }
+
+    .shuffle-btn svg {
+      width: 16px;
+      height: 16px;
     }
 
     /* ===== THUMBNAIL SCROLL ===== */
@@ -239,16 +266,30 @@
       display: block;
     }
 
-    /* Gradient overlay */
-    .thumbnail-card .thumb-image-wrapper::after {
-      content: '';
+    /* No gradient overlay — thumbnails have their own design */
+
+    /* Category label (New / Corrected) */
+    .thumb-category-label {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 40%;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
-      pointer-events: none;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 3;
+    }
+
+    .thumb-category-label.cat-new {
+      background: #00C9A7;
+      color: #000;
+    }
+
+    .thumb-category-label.cat-corrected {
+      background: #7B61FF;
+      color: #fff;
     }
 
     /* Badge */
@@ -289,11 +330,12 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 14px;
+      padding: 10px 14px;
       z-index: 2;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      background: transparent;
     }
 
     .thumb-episodes {
@@ -375,6 +417,10 @@
       gap: 4px;
       text-decoration: none;
       color: #555;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: inherit;
     }
 
     .nav-item.active {
@@ -438,9 +484,13 @@
       </div>
     </div>
 
-    <!-- BUSINESS SECTION -->
+    <!-- SECTION HEADER (changes with tab) -->
     <div class="section-header">
-      <div class="section-title">Business</div>
+      <div class="section-title" id="sectionTitle">New</div>
+      <button class="shuffle-btn" onclick="shuffleCards()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        Shuffle
+      </button>
     </div>
 
     <div class="thumbnail-scroll-wrapper">
@@ -465,34 +515,28 @@
       </div>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- BOTTOM NAV — 3 Tabs -->
     <div class="bottom-nav">
-      <a class="nav-item active" href="#">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-        <span class="nav-label">Home</span>
-      </a>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <span class="nav-label">Explore</span>
-      </a>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+      <button class="nav-item active" data-tab="new" onclick="switchTab('new')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
         <span class="nav-label">New</span>
-      </a>
-      <a class="nav-item" href="#">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-        <span class="nav-label">My Libraries</span>
-      </a>
+      </button>
+      <button class="nav-item" data-tab="corrected" onclick="switchTab('corrected')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+        <span class="nav-label">Corrected</span>
+      </button>
+      <button class="nav-item" data-tab="mix" onclick="switchTab('mix')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span class="nav-label">Mix</span>
+      </button>
     </div>
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const SUPABASE_URL = 'https://sluceerjagdurervugah.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
+    const API_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
+    let currentTab = 'new';
 
     const badgeClasses = {
       'New Episode': 'new-episode',
@@ -514,10 +558,14 @@
         ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> ${thumb.views}`
         : '';
 
+      const catClass = thumb.category === 'corrected' ? 'cat-corrected' : 'cat-new';
+      const catLabel = thumb.category === 'corrected' ? 'Corrected' : 'New';
+
       card.innerHTML = `
         <div class="thumb-image-wrapper">
           <img class="thumb-image" src="${thumb.image_url}" alt="${thumb.title || 'Thumbnail'}">
           ${badgeHTML}
+          <span class="thumb-category-label ${catClass}">${catLabel}</span>
         </div>
         <div class="thumb-info">
           <span class="thumb-episodes">${episodesText}</span>
@@ -527,25 +575,50 @@
       return card;
     }
 
-    async function loadThumbnails() {
+    function clearCards() {
+      const scroll = document.getElementById('thumbnailScroll');
+      const cards = scroll.querySelectorAll('.thumbnail-card, .thumb-placeholder');
+      cards.forEach(c => c.remove());
+    }
+
+    // Shuffle array in place
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Cache fetched data per tab so shuffle doesn't re-fetch
+    let cachedData = {};
+
+    async function fetchThumbnails(category) {
+      let url = BASE_URL + '?select=*&order=created_at.desc';
+      if (category !== 'mix') {
+        url += '&category=eq.' + category;
+      }
+
+      const res = await fetch(url, {
+        headers: {
+          'apikey': API_KEY,
+          'Authorization': 'Bearer ' + API_KEY
+        }
+      });
+      return await res.json();
+    }
+
+    function renderCards(data) {
       const scroll = document.getElementById('thumbnailScroll');
       const lastSpacer = scroll.querySelector('.thumb-spacer:last-child');
 
-      const { data, error } = await supabase
-        .from('thumbnails')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Failed to load thumbnails:', error.message);
-        return;
-      }
+      clearCards();
 
       if (!data || data.length === 0) {
-        // Show placeholder message if no thumbnails yet
         const placeholder = document.createElement('div');
+        placeholder.className = 'thumb-placeholder';
         placeholder.style.cssText = 'display:flex;align-items:center;justify-content:center;min-width:200px;height:420px;border:2px dashed #333;border-radius:16px;color:#555;font-size:14px;text-align:center;padding:20px;';
-        placeholder.textContent = 'No thumbnails yet. Upload some using: node upload.js /path/to/folder';
+        placeholder.textContent = 'No ' + currentTab + ' thumbnails yet.';
         scroll.insertBefore(placeholder, lastSpacer);
         return;
       }
@@ -554,9 +627,41 @@
         const card = createCard(thumb);
         scroll.insertBefore(card, lastSpacer);
       });
+
+      scroll.scrollLeft = 0;
     }
 
-    loadThumbnails();
+    async function loadThumbnails(category) {
+      try {
+        const data = await fetchThumbnails(category);
+        cachedData[category] = data;
+        renderCards(shuffle([...data]));
+      } catch (err) {
+        console.error('Failed to load thumbnails:', err);
+      }
+    }
+
+    function shuffleCards() {
+      if (cachedData[currentTab] && cachedData[currentTab].length > 0) {
+        renderCards(shuffle([...cachedData[currentTab]]));
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.tab === tab);
+      });
+
+      const titles = { new: 'New', corrected: 'Corrected', mix: 'Mix' };
+      document.getElementById('sectionTitle').textContent = titles[tab];
+
+      loadThumbnails(tab);
+    }
+
+    // Load "new" tab by default (shuffled)
+    loadThumbnails('new');
   </script>
 
 </body>

@@ -1,12 +1,10 @@
 /**
  * Upload Thumbnails to Supabase
  *
- * Usage: node upload.js /path/to/thumbnails-folder
- *
- * This script:
- * 1. Reads all images from the folder you provide
- * 2. Uploads each image to Supabase Storage
- * 3. Adds a row in the database for each thumbnail
+ * Usage:
+ *   node upload.js /path/to/folder --new        (uploads as "new" thumbnails)
+ *   node upload.js /path/to/folder --corrected  (uploads as "corrected" thumbnails)
+ *   node upload.js /path/to/folder              (defaults to "new")
  *
  * Supported formats: .jpg, .jpeg, .png, .webp
  */
@@ -23,14 +21,22 @@ const supabase = createClient(
 
 const SUPPORTED_FORMATS = ['.jpg', '.jpeg', '.png', '.webp'];
 
-async function uploadThumbnails(folderPath) {
+const BADGES = ['New Episode', 'Newly Added', 'Trending', 'Popular'];
+const randomBadge = () => BADGES[Math.floor(Math.random() * BADGES.length)];
+const randomEpisodes = () => Math.floor(Math.random() * 20) + 3;
+const randomViews = () => {
+  const num = Math.floor(Math.random() * 90) + 5;
+  return num + 'k';
+};
+
+async function uploadThumbnails(folderPath, category) {
   if (!folderPath) {
-    console.log('Please provide a folder path:');
-    console.log('  node upload.js /path/to/thumbnails-folder');
+    console.log('Usage:');
+    console.log('  node upload.js /path/to/folder --new');
+    console.log('  node upload.js /path/to/folder --corrected');
     process.exit(1);
   }
 
-  // Resolve the folder path
   const resolvedPath = path.resolve(folderPath);
 
   if (!fs.existsSync(resolvedPath)) {
@@ -38,19 +44,17 @@ async function uploadThumbnails(folderPath) {
     process.exit(1);
   }
 
-  // Get all image files
   const files = fs.readdirSync(resolvedPath).filter(file => {
     const ext = path.extname(file).toLowerCase();
     return SUPPORTED_FORMATS.includes(ext);
   });
 
   if (files.length === 0) {
-    console.log('No image files found in the folder.');
-    console.log('Supported formats: ' + SUPPORTED_FORMATS.join(', '));
+    console.log('No image files found.');
     process.exit(1);
   }
 
-  console.log(`Found ${files.length} images. Uploading...\n`);
+  console.log(`Found ${files.length} images. Uploading as "${category}"...\n`);
 
   let uploaded = 0;
   let failed = 0;
@@ -60,12 +64,10 @@ async function uploadThumbnails(folderPath) {
     const fileBuffer = fs.readFileSync(filePath);
     const ext = path.extname(file).toLowerCase();
 
-    // Create a clean filename with timestamp to avoid conflicts
     const timestamp = Date.now();
     const cleanName = file.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const storagePath = `${timestamp}_${cleanName}`;
+    const storagePath = `${category}/${timestamp}_${cleanName}`;
 
-    // Determine content type
     const contentTypes = {
       '.jpg': 'image/jpeg',
       '.jpeg': 'image/jpeg',
@@ -73,8 +75,7 @@ async function uploadThumbnails(folderPath) {
       '.webp': 'image/webp'
     };
 
-    // Upload to Supabase Storage
-    const { data: storageData, error: storageError } = await supabase.storage
+    const { error: storageError } = await supabase.storage
       .from('thumbnails')
       .upload(storagePath, fileBuffer, {
         contentType: contentTypes[ext],
@@ -87,27 +88,25 @@ async function uploadThumbnails(folderPath) {
       continue;
     }
 
-    // Get the public URL
     const { data: urlData } = supabase.storage
       .from('thumbnails')
       .getPublicUrl(storagePath);
 
     const imageUrl = urlData.publicUrl;
 
-    // Create a title from the filename (remove extension, replace underscores/hyphens)
     const title = path.basename(file, ext)
       .replace(/[-_]/g, ' ')
       .replace(/\b\w/g, c => c.toUpperCase());
 
-    // Insert into database
     const { error: dbError } = await supabase
       .from('thumbnails')
       .insert({
         title: title,
         image_url: imageUrl,
-        badge: null,
-        episodes: 0,
-        views: '0'
+        badge: randomBadge(),
+        episodes: randomEpisodes(),
+        views: randomViews(),
+        category: category
       });
 
     if (dbError) {
@@ -120,9 +119,12 @@ async function uploadThumbnails(folderPath) {
     console.log(`  Uploaded: ${file}`);
   }
 
-  console.log(`\nDone! ${uploaded} uploaded, ${failed} failed.`);
-  console.log('Refresh your preview page to see the new thumbnails.');
+  console.log(`\nDone! ${uploaded} uploaded as "${category}", ${failed} failed.`);
 }
 
-const folderPath = process.argv[2];
-uploadThumbnails(folderPath);
+// Parse arguments
+const args = process.argv.slice(2);
+const folderPath = args.find(a => !a.startsWith('--'));
+const category = args.includes('--corrected') ? 'corrected' : 'new';
+
+uploadThumbnails(folderPath, category);
