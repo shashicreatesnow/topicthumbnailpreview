@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thumbnail Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: #0A0A0A;
+      color: #FFFFFF;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* ===== LAYOUT ===== */
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dashboard-title {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .back-link {
+      color: #00C9A7;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      background: rgba(0, 201, 167, 0.1);
+      border: 1px solid rgba(0, 201, 167, 0.25);
+      padding: 8px 16px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .back-link:hover {
+      background: rgba(0, 201, 167, 0.2);
+    }
+
+    /* ===== SEARCH ===== */
+    .search-wrapper {
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: #1A1A1A;
+      border: 1px solid #2A2A2A;
+      border-radius: 14px;
+      padding: 14px 18px 14px 46px;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 16px center;
+    }
+
+    .search-input::placeholder {
+      color: #555;
+    }
+
+    .search-input:focus {
+      border-color: #00C9A7;
+    }
+
+    /* ===== FILTERS ===== */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      padding: 8px 18px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 2px solid transparent;
+      background: #1A1A1A;
+      color: #999;
+      transition: all 0.2s;
+    }
+
+    .filter-pill:hover {
+      background: #222;
+    }
+
+    .filter-pill.active {
+      color: #fff;
+    }
+
+    .filter-pill[data-filter="all"].active {
+      background: #333;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .filter-pill[data-filter="new"].active {
+      background: rgba(0, 201, 167, 0.15);
+      border-color: #00C9A7;
+      color: #00C9A7;
+    }
+
+    .filter-pill[data-filter="corrected"].active {
+      background: rgba(123, 97, 255, 0.15);
+      border-color: #7B61FF;
+      color: #7B61FF;
+    }
+
+    .filter-pill[data-filter="stable"].active {
+      background: rgba(255, 215, 0, 0.15);
+      border-color: #FFD700;
+      color: #FFD700;
+    }
+
+    .filter-pill[data-filter="discarded"].active {
+      background: rgba(255, 68, 68, 0.15);
+      border-color: #FF4444;
+      color: #FF4444;
+    }
+
+    .thumbnail-count {
+      margin-left: auto;
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    /* ===== DATE GROUP ===== */
+    .date-group {
+      margin-bottom: 36px;
+    }
+
+    .date-header {
+      font-size: 18px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1A1A1A;
+    }
+
+    /* ===== THUMBNAIL GRID ===== */
+    .thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .thumb-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .thumb-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dashboard-title {
+        font-size: 22px;
+      }
+
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* ===== THUMBNAIL CARD ===== */
+    .thumb-card {
+      background: #111;
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+      position: relative;
+    }
+
+    .thumb-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .thumb-card .card-image-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 2;
+      overflow: hidden;
+      border-radius: 12px;
+      margin: 0;
+    }
+
+    .thumb-card .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-card .card-body {
+      padding: 10px 12px 14px;
+    }
+
+    .thumb-card .card-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #ddd;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 10px;
+      min-height: 36px;
+    }
+
+    .thumb-card .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .status-badge.status-new {
+      background: #00C9A7;
+      color: #000;
+    }
+
+    .status-badge.status-corrected {
+      background: #7B61FF;
+      color: #fff;
+    }
+
+    .status-badge.status-stable {
+      background: #FFD700;
+      color: #000;
+    }
+
+    .status-badge.status-discarded {
+      background: #FF4444;
+      color: #fff;
+    }
+
+    /* ===== STATUS SELECT ===== */
+    .status-select-wrapper {
+      position: relative;
+    }
+
+    .status-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: #1A1A1A;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 6px 28px 6px 10px;
+      color: #ccc;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.2s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23777'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    .status-select:hover {
+      border-color: #555;
+    }
+
+    .status-select:focus {
+      border-color: #00C9A7;
+    }
+
+    /* ===== SUCCESS FLASH ===== */
+    .thumb-card.update-success {
+      animation: successFlash 0.6s ease;
+    }
+
+    @keyframes successFlash {
+      0% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0.5); }
+      30% { box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.3); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0); }
+    }
+
+    .thumb-card .check-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      background: #00C9A7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 5;
+    }
+
+    .thumb-card .check-overlay.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .check-overlay svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ===== LOADING ===== */
+    .loading-state {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      color: #555;
+      font-size: 16px;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #333;
+      border-top-color: #00C9A7;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 12px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: #555;
+      font-size: 15px;
+    }
+
+    /* ===== ERROR TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #FF4444;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 200;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.toast-success {
+      background: #00C9A7;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard">
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <h1 class="dashboard-title">Thumbnail Dashboard</h1>
+      </div>
+      <a href="index.html" class="back-link">
+        &larr; Back to Preview
+      </a>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-wrapper">
+      <input
+        type="text"
+        class="search-input"
+        id="searchInput"
+        placeholder="Search thumbnails by title..."
+        autocomplete="off"
+      >
+    </div>
+
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="filter-pill" data-filter="new" onclick="setFilter('new')">New</button>
+      <button class="filter-pill" data-filter="corrected" onclick="setFilter('corrected')">Corrected</button>
+      <button class="filter-pill" data-filter="stable" onclick="setFilter('stable')">Stable</button>
+      <button class="filter-pill" data-filter="discarded" onclick="setFilter('discarded')">Discarded</button>
+      <span class="thumbnail-count" id="thumbnailCount">0 thumbnails</span>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="mainContent">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        Loading thumbnails...
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== CONFIG =====
+    const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
+
+    // Service key stored in browser localStorage (never in code)
+    function getServiceKey() {
+      let key = localStorage.getItem('supabase_service_key');
+      if (!key) {
+        key = prompt('Enter your Supabase Service Key to access the dashboard:');
+        if (key) localStorage.setItem('supabase_service_key', key);
+      }
+      return key;
+    }
+
+    const SERVICE_KEY = getServiceKey();
+    if (!SERVICE_KEY) {
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#888;font-size:18px;">Service key required. Refresh to try again.</div>';
+    }
+
+    // Headers for all requests
+    const HEADERS = {
+      'apikey': SERVICE_KEY,
+      'Authorization': 'Bearer ' + SERVICE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    };
+
+    // ===== STATE =====
+    let allThumbnails = [];
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', loadAllThumbnails);
+
+    // Search with debounce so it doesn't fire on every keystroke
+    let searchTimer;
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function() {
+        searchQuery = e.target.value.trim().toLowerCase();
+        renderAll();
+      }, 200);
+    });
+
+    // ===== FETCH ALL THUMBNAILS =====
+    async function loadAllThumbnails() {
+      try {
+        const url = BASE_URL + '?select=*&order=created_at.desc';
+        const res = await fetch(url, { headers: HEADERS });
+
+        if (!res.ok) throw new Error('Failed to fetch: ' + res.status);
+
+        allThumbnails = await res.json();
+        document.getElementById('loadingState').style.display = 'none';
+        renderAll();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loadingState').innerHTML =
+          '<span style="color:#FF4444;">Failed to load thumbnails. Check console for details.</span>';
+      }
+    }
+
+    // ===== FILTER + SEARCH =====
+    function getFilteredThumbnails() {
+      return allThumbnails.filter(function(t) {
+        // Category filter
+        if (currentFilter !== 'all' && t.category !== currentFilter) return false;
+        // Search filter
+        if (searchQuery && !(t.title || '').toLowerCase().includes(searchQuery)) return false;
+        return true;
+      });
+    }
+
+    // ===== SET FILTER =====
+    function setFilter(filter) {
+      currentFilter = filter;
+
+      // Update active pill
+      document.querySelectorAll('.filter-pill').forEach(function(pill) {
+        pill.classList.toggle('active', pill.dataset.filter === filter);
+      });
+
+      renderAll();
+    }
+
+    // ===== FORMAT DATE =====
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Unknown Date';
+      var d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Get just the date part (YYYY-MM-DD) for grouping
+    function getDateKey(dateStr) {
+      if (!dateStr) return 'unknown';
+      return dateStr.substring(0, 10);
+    }
+
+    // ===== RENDER ALL =====
+    function renderAll() {
+      var filtered = getFilteredThumbnails();
+      var content = document.getElementById('mainContent');
+
+      // Update count
+      var countText = filtered.length === 1 ? '1 thumbnail' : filtered.length + ' thumbnails';
+      document.getElementById('thumbnailCount').textContent = countText;
+
+      // Clear previous content (keep loading state hidden)
+      content.innerHTML = '';
+
+      if (filtered.length === 0) {
+        content.innerHTML = '<div class="empty-state">No thumbnails found.</div>';
+        return;
+      }
+
+      // Group by date
+      var groups = {};
+      var groupOrder = [];
+
+      filtered.forEach(function(t) {
+        var key = getDateKey(t.created_at);
+        if (!groups[key]) {
+          groups[key] = [];
+          groupOrder.push(key);
+        }
+        groups[key].push(t);
+      });
+
+      // Render each group
+      groupOrder.forEach(function(key) {
+        var group = document.createElement('div');
+        group.className = 'date-group';
+
+        var header = document.createElement('div');
+        header.className = 'date-header';
+        header.textContent = formatDate(key);
+        group.appendChild(header);
+
+        var grid = document.createElement('div');
+        grid.className = 'thumb-grid';
+
+        groups[key].forEach(function(t) {
+          grid.appendChild(createCard(t));
+        });
+
+        group.appendChild(grid);
+        content.appendChild(group);
+      });
+    }
+
+    // ===== CREATE CARD =====
+    function createCard(thumb) {
+      var card = document.createElement('div');
+      card.className = 'thumb-card';
+      card.id = 'card-' + thumb.id;
+
+      var category = thumb.category || 'new';
+      var statusClass = 'status-' + category;
+
+      card.innerHTML =
+        '<div class="card-image-wrapper">' +
+          '<img class="card-image" src="' + (thumb.image_url || '') + '" alt="' + (thumb.title || 'Thumbnail') + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+          '<div class="check-overlay" id="check-' + thumb.id + '">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-body">' +
+          '<div class="card-title">' + (thumb.title || 'Untitled') + '</div>' +
+          '<div class="card-meta">' +
+            '<span class="status-badge ' + statusClass + '">' + category + '</span>' +
+          '</div>' +
+          '<div class="status-select-wrapper">' +
+            '<select class="status-select" data-id="' + thumb.id + '" onchange="updateStatus(this)">' +
+              '<option value="new"' + (category === 'new' ? ' selected' : '') + '>New</option>' +
+              '<option value="corrected"' + (category === 'corrected' ? ' selected' : '') + '>Corrected</option>' +
+              '<option value="stable"' + (category === 'stable' ? ' selected' : '') + '>Stable</option>' +
+              '<option value="discarded"' + (category === 'discarded' ? ' selected' : '') + '>Discarded</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>';
+
+      return card;
+    }
+
+    // ===== UPDATE STATUS =====
+    async function updateStatus(selectEl) {
+      var id = selectEl.dataset.id;
+      var newCategory = selectEl.value;
+      var card = document.getElementById('card-' + id);
+
+      try {
+        var url = BASE_URL + '?id=eq.' + id;
+        var res = await fetch(url, {
+          method: 'PATCH',
+          headers: HEADERS,
+          body: JSON.stringify({ category: newCategory })
+        });
+
+        if (!res.ok) throw new Error('Update failed: ' + res.status);
+
+        // Update local data
+        var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
+        if (thumb) thumb.category = newCategory;
+
+        // Update the badge in the card
+        var badge = card.querySelector('.status-badge');
+        badge.className = 'status-badge status-' + newCategory;
+        badge.textContent = newCategory;
+
+        // Show success animation
+        card.classList.remove('update-success');
+        // Force reflow to restart animation
+        void card.offsetWidth;
+        card.classList.add('update-success');
+
+        var checkEl = document.getElementById('check-' + id);
+        checkEl.classList.add('show');
+        setTimeout(function() {
+          checkEl.classList.remove('show');
+        }, 1200);
+
+        showToast('Status updated to "' + newCategory + '"', 'success');
+
+        // If we are filtering by a category and the item no longer matches, re-render after a short delay
+        if (currentFilter !== 'all' && newCategory !== currentFilter) {
+          setTimeout(renderAll, 800);
+        }
+
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to update status', 'error');
+        // Revert select to previous value
+        var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
+        if (thumb) selectEl.value = thumb.category;
+      }
+    }
+
+    // ===== TOAST =====
+    function showToast(message, type) {
+      var toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast' + (type === 'success' ? ' toast-success' : '');
+      toast.classList.add('show');
+
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>
