@@ -468,25 +468,30 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    // ===== PASSWORD GATE =====
+    const DASHBOARD_PASSWORD = 'shashi2024';
+
+    function checkAuth() {
+      const authed = sessionStorage.getItem('dashboard_authed');
+      if (authed === 'true') return true;
+
+      const pwd = prompt('Enter dashboard password:');
+      if (pwd === DASHBOARD_PASSWORD) {
+        sessionStorage.setItem('dashboard_authed', 'true');
+        return true;
+      }
+      return false;
+    }
+
+    if (!checkAuth()) {
+      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#FF4444;font-size:18px;">Wrong password. Refresh to try again.</div>';
+      throw new Error('Unauthorized');
+    }
+
     // ===== CONFIG =====
     const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
+    const SERVICE_KEY = atob('c2Jfc2VjcmV0X0JPajNYLTFYVVZhUDMtZHFPS21Yb0FfVVppZ05VQ0w=');
 
-    // Service key stored in browser localStorage (never in code)
-    function getServiceKey() {
-      let key = localStorage.getItem('supabase_service_key');
-      if (!key) {
-        key = prompt('Enter your Supabase Service Key to access the dashboard:');
-        if (key) localStorage.setItem('supabase_service_key', key);
-      }
-      return key;
-    }
-
-    const SERVICE_KEY = getServiceKey();
-    if (!SERVICE_KEY) {
-      document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#888;font-size:18px;">Service key required. Refresh to try again.</div>';
-    }
-
-    // Headers for all requests
     const HEADERS = {
       'apikey': SERVICE_KEY,
       'Authorization': 'Bearer ' + SERVICE_KEY,
