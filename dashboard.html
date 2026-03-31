@@ -490,11 +490,12 @@
 
     // ===== CONFIG =====
     const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
+    const ANON_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
     const SERVICE_KEY = atob('c2Jfc2VjcmV0X0JPajNYLTFYVVZhUDMtZHFPS21Yb0FfVVppZ05VQ0w=');
 
     const READ_HEADERS = {
-      'apikey': SERVICE_KEY,
-      'Authorization': 'Bearer ' + SERVICE_KEY
+      'apikey': ANON_KEY,
+      'Authorization': 'Bearer ' + ANON_KEY
     };
 
     const WRITE_HEADERS = {
@@ -528,15 +529,18 @@
         const url = BASE_URL + '?select=*&order=created_at.desc';
         const res = await fetch(url, { headers: READ_HEADERS });
 
-        if (!res.ok) throw new Error('Failed to fetch: ' + res.status);
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error('Fetch failed (' + res.status + '): ' + errorText);
+        }
 
         allThumbnails = await res.json();
         document.getElementById('loadingState').style.display = 'none';
         renderAll();
       } catch (err) {
-        console.error(err);
+        console.error('Dashboard error:', err);
         document.getElementById('loadingState').innerHTML =
-          '<span style="color:#FF4444;">Failed to load thumbnails. Check console for details.</span>';
+          '<span style="color:#FF4444;">' + err.message + '</span>';
       }
     }
 
