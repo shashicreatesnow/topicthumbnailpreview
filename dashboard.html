@@ -492,7 +492,12 @@
     const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
     const SERVICE_KEY = atob('c2Jfc2VjcmV0X0JPajNYLTFYVVZhUDMtZHFPS21Yb0FfVVppZ05VQ0w=');
 
-    const HEADERS = {
+    const READ_HEADERS = {
+      'apikey': SERVICE_KEY,
+      'Authorization': 'Bearer ' + SERVICE_KEY
+    };
+
+    const WRITE_HEADERS = {
       'apikey': SERVICE_KEY,
       'Authorization': 'Bearer ' + SERVICE_KEY,
       'Content-Type': 'application/json',
@@ -521,7 +526,7 @@
     async function loadAllThumbnails() {
       try {
         const url = BASE_URL + '?select=*&order=created_at.desc';
-        const res = await fetch(url, { headers: HEADERS });
+        const res = await fetch(url, { headers: READ_HEADERS });
 
         if (!res.ok) throw new Error('Failed to fetch: ' + res.status);
 
@@ -671,7 +676,7 @@
         var url = BASE_URL + '?id=eq.' + id;
         var res = await fetch(url, {
           method: 'PATCH',
-          headers: HEADERS,
+          headers: WRITE_HEADERS,
           body: JSON.stringify({ category: newCategory })
         });
 
