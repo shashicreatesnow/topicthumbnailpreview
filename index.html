@@ -219,11 +219,6 @@
     }
 
     /* ===== THUMBNAIL SCROLL ===== */
-    .thumbnail-scroll-wrapper {
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-
     .thumbnail-scroll {
       display: flex;
       gap: 12px;
@@ -238,15 +233,9 @@
       display: none;
     }
 
-    .thumb-spacer {
-      min-width: 16px;
-      flex-shrink: 0;
-    }
-
     .thumbnail-card {
       flex-shrink: 0;
-      width: 48%;
-      max-width: 210px;
+      width: 210px;
       aspect-ratio: 1 / 2;
       border-radius: 16px;
       overflow: hidden;
@@ -515,12 +504,8 @@
       </button>
     </div>
 
-    <div class="thumbnail-scroll-wrapper">
     <div class="thumbnail-scroll" id="thumbnailScroll">
-      <div class="thumb-spacer"></div>
       <!-- Cards loaded dynamically from Supabase -->
-      <div class="thumb-spacer"></div>
-    </div>
     </div>
 
     <!-- BOTTOM SECTION -->
@@ -627,22 +612,23 @@
 
     function renderCards(data) {
       const scroll = document.getElementById('thumbnailScroll');
-      const lastSpacer = scroll.querySelector('.thumb-spacer:last-child');
 
       clearCards();
 
       if (!data || data.length === 0) {
         const placeholder = document.createElement('div');
         placeholder.className = 'thumb-placeholder';
-        placeholder.style.cssText = 'display:flex;align-items:center;justify-content:center;min-width:200px;height:420px;border:2px dashed #333;border-radius:16px;color:#555;font-size:14px;text-align:center;padding:20px;';
+        placeholder.style.cssText = 'display:flex;align-items:center;justify-content:center;min-width:200px;height:420px;border:2px dashed #333;border-radius:16px;color:#555;font-size:14px;text-align:center;padding:20px;margin-left:16px;';
         placeholder.textContent = 'No ' + currentTab + ' thumbnails yet.';
-        scroll.insertBefore(placeholder, lastSpacer);
+        scroll.appendChild(placeholder);
         return;
       }
 
-      data.forEach(thumb => {
+      data.forEach((thumb, i) => {
         const card = createCard(thumb);
-        scroll.insertBefore(card, lastSpacer);
+        if (i === 0) card.style.marginLeft = '16px';
+        if (i === data.length - 1) card.style.marginRight = '16px';
+        scroll.appendChild(card);
       });
 
       scroll.scrollLeft = 0;
