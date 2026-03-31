@@ -607,7 +607,7 @@
     let cachedData = {};
 
     async function fetchThumbnails(category) {
-      let url = BASE_URL + '?select=*&order=created_at.desc&category=neq.discarded';
+      let url = BASE_URL + '?select=*&order=created_at.desc&category=neq.hold';
       if (category !== 'mix') {
         url += '&category=eq.' + category;
       }

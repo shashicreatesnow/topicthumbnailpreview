@@ -7,11 +7,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       min-height: 100%;
@@ -20,605 +16,511 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* ===== LAYOUT ===== */
-    .dashboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 20px 60px;
-    }
+    .dashboard { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
 
-    /* ===== TOP BAR ===== */
+    /* TOP BAR */
     .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      gap: 16px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px; gap: 16px; flex-wrap: wrap;
     }
-
-    .top-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .dashboard-title {
-      font-size: 28px;
-      font-weight: 700;
-    }
-
+    .dashboard-title { font-size: 28px; font-weight: 700; }
     .back-link {
-      color: #00C9A7;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      background: rgba(0, 201, 167, 0.1);
-      border: 1px solid rgba(0, 201, 167, 0.25);
-      padding: 8px 16px;
-      border-radius: 10px;
-      transition: background 0.2s;
+      color: #00C9A7; text-decoration: none; font-size: 14px; font-weight: 500;
+      background: rgba(0,201,167,0.1); border: 1px solid rgba(0,201,167,0.25);
+      padding: 8px 16px; border-radius: 10px;
     }
+    .back-link:hover { background: rgba(0,201,167,0.2); }
 
-    .back-link:hover {
-      background: rgba(0, 201, 167, 0.2);
-    }
-
-    /* ===== SEARCH ===== */
-    .search-wrapper {
-      margin-bottom: 16px;
-    }
-
+    /* SEARCH */
+    .search-wrapper { margin-bottom: 16px; }
     .search-input {
-      width: 100%;
-      background: #1A1A1A;
-      border: 1px solid #2A2A2A;
-      border-radius: 14px;
-      padding: 14px 18px 14px 46px;
-      color: #fff;
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
+      width: 100%; background: #1A1A1A; border: 1px solid #2A2A2A;
+      border-radius: 14px; padding: 14px 18px 14px 46px; color: #fff;
+      font-size: 15px; font-family: inherit; outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: 16px center;
+      background-repeat: no-repeat; background-position: 16px center;
     }
+    .search-input::placeholder { color: #555; }
+    .search-input:focus { border-color: #00C9A7; }
 
-    .search-input::placeholder {
-      color: #555;
-    }
-
-    .search-input:focus {
-      border-color: #00C9A7;
-    }
-
-    /* ===== FILTERS ===== */
+    /* FILTERS ROW */
     .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px; flex-wrap: wrap;
     }
-
     .filter-pill {
-      padding: 8px 18px;
-      border-radius: 100px;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: inherit;
+      padding: 8px 18px; border-radius: 100px; font-size: 13px; font-weight: 600;
+      font-family: inherit; cursor: pointer; border: 2px solid transparent;
+      background: #1A1A1A; color: #999; transition: all 0.2s;
+    }
+    .filter-pill:hover { background: #222; }
+    .filter-pill.active { color: #fff; }
+    .filter-pill[data-filter="all"].active { background: #333; border-color: #555; }
+    .filter-pill[data-filter="new"].active { background: rgba(0,201,167,0.15); border-color: #00C9A7; color: #00C9A7; }
+    .filter-pill[data-filter="corrected"].active { background: rgba(123,97,255,0.15); border-color: #7B61FF; color: #7B61FF; }
+    .filter-pill[data-filter="stable"].active { background: rgba(255,215,0,0.15); border-color: #FFD700; color: #FFD700; }
+    .filter-pill[data-filter="hold"].active { background: rgba(255,68,68,0.15); border-color: #FF4444; color: #FF4444; }
+    .thumbnail-count { margin-left: auto; font-size: 14px; color: #666; font-weight: 500; }
+
+    /* DATE FILTER */
+    .date-filter-bar {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .date-filter-bar label { font-size: 13px; color: #888; font-weight: 500; }
+    .date-input {
+      background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 10px;
+      padding: 8px 14px; color: #fff; font-size: 13px; font-family: inherit; outline: none;
+      color-scheme: dark;
+    }
+    .date-input:focus { border-color: #00C9A7; }
+    .date-clear-btn {
+      background: #222; border: 1px solid #333; border-radius: 8px;
+      padding: 8px 14px; color: #999; font-size: 12px; font-family: inherit;
       cursor: pointer;
-      border: 2px solid transparent;
-      background: #1A1A1A;
-      color: #999;
-      transition: all 0.2s;
     }
+    .date-clear-btn:hover { color: #fff; border-color: #555; }
 
-    .filter-pill:hover {
-      background: #222;
+    /* BULK ACTIONS BAR */
+    .bulk-bar {
+      display: none; align-items: center; gap: 12px;
+      background: #1A1A1A; border: 1px solid #2A2A2A; border-radius: 14px;
+      padding: 12px 18px; margin-bottom: 20px; flex-wrap: wrap;
     }
-
-    .filter-pill.active {
-      color: #fff;
-    }
-
-    .filter-pill[data-filter="all"].active {
-      background: #333;
-      border-color: #555;
-      color: #fff;
-    }
-
-    .filter-pill[data-filter="new"].active {
-      background: rgba(0, 201, 167, 0.15);
-      border-color: #00C9A7;
-      color: #00C9A7;
-    }
-
-    .filter-pill[data-filter="corrected"].active {
-      background: rgba(123, 97, 255, 0.15);
-      border-color: #7B61FF;
-      color: #7B61FF;
-    }
-
-    .filter-pill[data-filter="stable"].active {
-      background: rgba(255, 215, 0, 0.15);
-      border-color: #FFD700;
-      color: #FFD700;
-    }
-
-    .filter-pill[data-filter="discarded"].active {
-      background: rgba(255, 68, 68, 0.15);
-      border-color: #FF4444;
-      color: #FF4444;
-    }
-
-    .thumbnail-count {
-      margin-left: auto;
-      font-size: 14px;
-      color: #666;
-      font-weight: 500;
-    }
-
-    /* ===== DATE GROUP ===== */
-    .date-group {
-      margin-bottom: 36px;
-    }
-
-    .date-header {
-      font-size: 18px;
-      font-weight: 600;
-      color: #888;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #1A1A1A;
-    }
-
-    /* ===== THUMBNAIL GRID ===== */
-    .thumb-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 900px) {
-      .thumb-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    @media (max-width: 640px) {
-      .thumb-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .dashboard-title {
-        font-size: 22px;
-      }
-
-      .top-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    /* ===== THUMBNAIL CARD ===== */
-    .thumb-card {
-      background: #111;
-      border-radius: 14px;
-      overflow: hidden;
-      transition: transform 0.15s, box-shadow 0.15s;
-      position: relative;
-    }
-
-    .thumb-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    }
-
-    .thumb-card .card-image-wrapper {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 2;
-      overflow: hidden;
-      border-radius: 12px;
-      margin: 0;
-    }
-
-    .thumb-card .card-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .thumb-card .card-body {
-      padding: 10px 12px 14px;
-    }
-
-    .thumb-card .card-title {
-      font-size: 13px;
-      font-weight: 500;
-      color: #ddd;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 10px;
-      min-height: 36px;
-    }
-
-    .thumb-card .card-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    /* ===== STATUS BADGE ===== */
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: capitalize;
-    }
-
-    .status-badge.status-new {
-      background: #00C9A7;
-      color: #000;
-    }
-
-    .status-badge.status-corrected {
-      background: #7B61FF;
-      color: #fff;
-    }
-
-    .status-badge.status-stable {
-      background: #FFD700;
-      color: #000;
-    }
-
-    .status-badge.status-discarded {
-      background: #FF4444;
-      color: #fff;
-    }
-
-    /* ===== STATUS SELECT ===== */
-    .status-select-wrapper {
-      position: relative;
-    }
-
-    .status-select {
-      appearance: none;
-      -webkit-appearance: none;
-      background: #1A1A1A;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 6px 28px 6px 10px;
-      color: #ccc;
-      font-size: 12px;
-      font-family: inherit;
-      font-weight: 500;
-      cursor: pointer;
-      outline: none;
-      width: 100%;
-      transition: border-color 0.2s;
+    .bulk-bar.visible { display: flex; }
+    .bulk-bar .bulk-count { font-size: 14px; font-weight: 600; color: #00C9A7; }
+    .bulk-bar .bulk-label { font-size: 13px; color: #888; }
+    .bulk-select {
+      appearance: none; -webkit-appearance: none; background: #0A0A0A;
+      border: 1px solid #333; border-radius: 8px; padding: 8px 30px 8px 12px;
+      color: #fff; font-size: 13px; font-family: inherit; cursor: pointer; outline: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23777'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
+      background-repeat: no-repeat; background-position: right 8px center;
+    }
+    .bulk-apply-btn {
+      background: #00C9A7; color: #000; border: none; border-radius: 8px;
+      padding: 8px 18px; font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer;
+    }
+    .bulk-apply-btn:hover { background: #00ddb8; }
+    .bulk-deselect-btn {
+      background: none; border: 1px solid #333; border-radius: 8px;
+      padding: 8px 14px; color: #999; font-size: 12px; font-family: inherit; cursor: pointer;
+    }
+    .bulk-deselect-btn:hover { color: #fff; border-color: #555; }
+
+    /* DATE GROUP */
+    .date-group { margin-bottom: 36px; }
+    .date-header {
+      font-size: 18px; font-weight: 600; color: #888;
+      margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #1A1A1A;
     }
 
-    .status-select:hover {
-      border-color: #555;
+    /* THUMBNAIL GRID */
+    .thumb-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .thumb-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) {
+      .thumb-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-title { font-size: 22px; }
+      .top-bar { flex-direction: column; align-items: flex-start; }
     }
 
-    .status-select:focus {
-      border-color: #00C9A7;
+    /* THUMBNAIL CARD */
+    .thumb-card {
+      background: #111; border-radius: 14px; overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s; position: relative;
     }
+    .thumb-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+    .thumb-card.selected { outline: 3px solid #00C9A7; outline-offset: -3px; }
 
-    /* ===== SUCCESS FLASH ===== */
-    .thumb-card.update-success {
-      animation: successFlash 0.6s ease;
+    .card-image-wrapper {
+      position: relative; width: 100%; aspect-ratio: 1/2;
+      overflow: hidden; border-radius: 12px; cursor: pointer;
     }
+    .card-image { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+    /* Checkbox overlay */
+    .card-checkbox {
+      position: absolute; top: 10px; left: 10px; width: 24px; height: 24px;
+      background: rgba(0,0,0,0.5); border: 2px solid #555; border-radius: 6px;
+      cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+    }
+    .card-checkbox:hover { border-color: #00C9A7; }
+    .card-checkbox.checked { background: #00C9A7; border-color: #00C9A7; }
+    .card-checkbox svg { display: none; width: 14px; height: 14px; }
+    .card-checkbox.checked svg { display: block; }
+
+    /* Replace button */
+    .replace-btn {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(0,0,0,0.7); border: 1px solid #444; border-radius: 8px;
+      padding: 6px 10px; color: #ccc; font-size: 11px; font-weight: 500;
+      cursor: pointer; z-index: 5; display: flex; align-items: center; gap: 4px;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .card-image-wrapper:hover .replace-btn { opacity: 1; }
+    .replace-btn:hover { background: rgba(0,201,167,0.3); border-color: #00C9A7; color: #fff; }
+    .replace-btn svg { width: 12px; height: 12px; }
+
+    /* Delete button */
+    .delete-btn {
+      background: rgba(255,68,68,0.15); border: 1px solid #FF4444; border-radius: 8px;
+      padding: 6px 12px; color: #FF4444; font-size: 11px; font-weight: 600;
+      cursor: pointer; font-family: inherit; width: 100%; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      transition: all 0.15s;
+    }
+    .delete-btn:hover { background: rgba(255,68,68,0.3); color: #fff; }
+    .delete-btn svg { width: 12px; height: 12px; }
+
+    /* Hidden file input */
+    .hidden-file-input { display: none; }
+
+    .check-overlay {
+      position: absolute; top: 12px; right: 12px; width: 28px; height: 28px;
+      background: #00C9A7; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center;
+      opacity: 0; transform: scale(0.5); transition: opacity 0.3s, transform 0.3s; z-index: 5;
+    }
+    .check-overlay.show { opacity: 1; transform: scale(1); }
+    .check-overlay svg { width: 16px; height: 16px; }
+
+    .card-body { padding: 10px 12px 14px; }
+    .card-title {
+      font-size: 13px; font-weight: 500; color: #ddd; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; margin-bottom: 10px; min-height: 36px;
+    }
+    .card-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+
+    /* STATUS BADGE */
+    .status-badge {
+      display: inline-block; padding: 4px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; text-transform: capitalize;
+    }
+    .status-new { background: #00C9A7; color: #000; }
+    .status-corrected { background: #7B61FF; color: #fff; }
+    .status-stable { background: #FFD700; color: #000; }
+    .status-hold { background: #FF4444; color: #fff; }
+
+    /* STATUS SELECT */
+    .status-select {
+      appearance: none; -webkit-appearance: none; background: #1A1A1A;
+      border: 1px solid #333; border-radius: 8px; padding: 6px 28px 6px 10px;
+      color: #ccc; font-size: 12px; font-family: inherit; font-weight: 500;
+      cursor: pointer; outline: none; width: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23777'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+    }
+    .status-select:hover { border-color: #555; }
+    .status-select:focus { border-color: #00C9A7; }
+
+    /* SUCCESS FLASH */
+    .thumb-card.update-success { animation: successFlash 0.6s ease; }
     @keyframes successFlash {
-      0% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0.5); }
-      30% { box-shadow: 0 0 0 4px rgba(0, 201, 167, 0.3); }
-      100% { box-shadow: 0 0 0 0 rgba(0, 201, 167, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(0,201,167,0.5); }
+      30% { box-shadow: 0 0 0 4px rgba(0,201,167,0.3); }
+      100% { box-shadow: 0 0 0 0 rgba(0,201,167,0); }
     }
 
-    .thumb-card .check-overlay {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 28px;
-      height: 28px;
-      background: #00C9A7;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.5);
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 5;
-    }
+    /* LOADING / EMPTY */
+    .loading-state { display: flex; align-items: center; justify-content: center; padding: 80px 20px; color: #555; font-size: 16px; }
+    .spinner { width: 24px; height: 24px; border: 3px solid #333; border-top-color: #00C9A7; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 12px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 80px 20px; color: #555; font-size: 15px; }
 
-    .thumb-card .check-overlay.show {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .check-overlay svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    /* ===== LOADING ===== */
-    .loading-state {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 20px;
-      color: #555;
-      font-size: 16px;
-    }
-
-    .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid #333;
-      border-top-color: #00C9A7;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin-right: 12px;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* ===== EMPTY STATE ===== */
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      color: #555;
-      font-size: 15px;
-    }
-
-    /* ===== ERROR TOAST ===== */
+    /* TOAST */
     .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #FF4444;
-      color: #fff;
-      padding: 12px 24px;
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: #FF4444; color: #fff; padding: 12px 24px; border-radius: 12px;
+      font-size: 14px; font-weight: 500; z-index: 200; opacity: 0;
+      transition: transform 0.3s, opacity 0.3s; pointer-events: none; max-width: 90vw;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.toast-success { background: #00C9A7; color: #000; }
+
+    /* Replacing indicator */
+    .replacing-overlay {
+      position: absolute; inset: 0; background: rgba(0,0,0,0.7);
+      display: flex; align-items: center; justify-content: center; z-index: 10;
       border-radius: 12px;
-      font-size: 14px;
-      font-weight: 500;
-      z-index: 200;
-      opacity: 0;
-      transition: transform 0.3s, opacity 0.3s;
-      pointer-events: none;
     }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.toast-success {
-      background: #00C9A7;
-      color: #000;
-    }
+    .replacing-overlay .spinner { margin: 0; }
   </style>
 </head>
 <body>
 
   <div class="dashboard">
-
-    <!-- TOP BAR -->
     <div class="top-bar">
-      <div class="top-bar-left">
-        <h1 class="dashboard-title">Thumbnail Dashboard</h1>
-      </div>
-      <a href="index.html" class="back-link">
-        &larr; Back to Preview
-      </a>
+      <h1 class="dashboard-title">Thumbnail Dashboard</h1>
+      <a href="index.html" class="back-link">&larr; Back to Preview</a>
     </div>
 
-    <!-- SEARCH -->
     <div class="search-wrapper">
-      <input
-        type="text"
-        class="search-input"
-        id="searchInput"
-        placeholder="Search thumbnails by title..."
-        autocomplete="off"
-      >
+      <input type="text" class="search-input" id="searchInput" placeholder="Search thumbnails by title..." autocomplete="off">
     </div>
 
-    <!-- FILTER BAR -->
     <div class="filter-bar">
       <button class="filter-pill active" data-filter="all" onclick="setFilter('all')">All</button>
       <button class="filter-pill" data-filter="new" onclick="setFilter('new')">New</button>
       <button class="filter-pill" data-filter="corrected" onclick="setFilter('corrected')">Corrected</button>
       <button class="filter-pill" data-filter="stable" onclick="setFilter('stable')">Stable</button>
-      <button class="filter-pill" data-filter="discarded" onclick="setFilter('discarded')">Discarded</button>
+      <button class="filter-pill" data-filter="hold" onclick="setFilter('hold')">Hold</button>
       <span class="thumbnail-count" id="thumbnailCount">0 thumbnails</span>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div id="mainContent">
-      <div class="loading-state" id="loadingState">
-        <div class="spinner"></div>
-        Loading thumbnails...
-      </div>
+    <div class="date-filter-bar">
+      <label>Date:</label>
+      <input type="date" class="date-input" id="dateFrom" placeholder="From">
+      <span style="color:#555;">to</span>
+      <input type="date" class="date-input" id="dateTo" placeholder="To">
+      <button class="date-clear-btn" onclick="clearDateFilter()">Clear dates</button>
     </div>
 
+    <div class="bulk-bar" id="bulkBar">
+      <span class="bulk-count" id="bulkCount">0</span>
+      <span class="bulk-label">selected</span>
+      <select class="bulk-select" id="bulkSelect">
+        <option value="">Change to...</option>
+        <option value="new">New</option>
+        <option value="corrected">Corrected</option>
+        <option value="stable">Stable</option>
+        <option value="hold">Hold</option>
+      </select>
+      <button class="bulk-apply-btn" onclick="applyBulkStatus()">Apply</button>
+      <button class="bulk-deselect-btn" onclick="deselectAll()">Deselect all</button>
+    </div>
+
+    <div id="mainContent">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div> Loading thumbnails...
+      </div>
+    </div>
   </div>
 
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
   <script>
     // ===== PASSWORD GATE =====
     const DASHBOARD_PASSWORD = 'shashi2024';
-
     function checkAuth() {
-      const authed = sessionStorage.getItem('dashboard_authed');
+      var authed = sessionStorage.getItem('dashboard_authed');
       if (authed === 'true') return true;
-
-      const pwd = prompt('Enter dashboard password:');
-      if (pwd === DASHBOARD_PASSWORD) {
-        sessionStorage.setItem('dashboard_authed', 'true');
-        return true;
-      }
+      var pwd = prompt('Enter dashboard password:');
+      if (pwd === DASHBOARD_PASSWORD) { sessionStorage.setItem('dashboard_authed', 'true'); return true; }
       return false;
     }
-
     if (!checkAuth()) {
       document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#FF4444;font-size:18px;">Wrong password. Refresh to try again.</div>';
       throw new Error('Unauthorized');
     }
 
     // ===== CONFIG =====
-    const BASE_URL = 'https://sluceerjagdurervugah.supabase.co/rest/v1/thumbnails';
-    const ANON_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
-    const SERVICE_KEY = atob('c2Jfc2VjcmV0X0JPajNYLTFYVVZhUDMtZHFPS21Yb0FfVVppZ05VQ0w=');
-
-    const READ_HEADERS = {
-      'apikey': ANON_KEY,
-      'Authorization': 'Bearer ' + ANON_KEY
-    };
-
-    const WRITE_HEADERS = {
-      'apikey': SERVICE_KEY,
-      'Authorization': 'Bearer ' + SERVICE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    };
+    var BASE_URL = 'https://sluceerjagdurervugah.supabase.co';
+    var API_KEY = 'sb_publishable_b3__Sf986sBq1bViplRBjQ_3n73U0Jl';
+    var READ_HEADERS = { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY };
+    var WRITE_HEADERS = { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' };
 
     // ===== STATE =====
-    let allThumbnails = [];
-    let currentFilter = 'all';
-    let searchQuery = '';
+    var allThumbnails = [];
+    var currentFilter = 'all';
+    var searchQuery = '';
+    var selectedIds = new Set();
 
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', loadAllThumbnails);
 
-    // Search with debounce so it doesn't fire on every keystroke
-    let searchTimer;
+    var searchTimer;
     document.getElementById('searchInput').addEventListener('input', function(e) {
       clearTimeout(searchTimer);
-      searchTimer = setTimeout(function() {
-        searchQuery = e.target.value.trim().toLowerCase();
-        renderAll();
-      }, 200);
+      searchTimer = setTimeout(function() { searchQuery = e.target.value.trim().toLowerCase(); renderAll(); }, 200);
     });
 
-    // ===== FETCH ALL THUMBNAILS =====
+    document.getElementById('dateFrom').addEventListener('change', renderAll);
+    document.getElementById('dateTo').addEventListener('change', renderAll);
+
+    // ===== FETCH =====
     async function loadAllThumbnails() {
       try {
-        const url = BASE_URL + '?select=*&order=created_at.desc';
-        const res = await fetch(url, { headers: READ_HEADERS });
-
-        if (!res.ok) {
-          const errorText = await res.text();
-          throw new Error('Fetch failed (' + res.status + '): ' + errorText);
-        }
-
+        var res = await fetch(BASE_URL + '/rest/v1/thumbnails?select=*&order=created_at.desc', { headers: READ_HEADERS });
+        if (!res.ok) { var t = await res.text(); throw new Error('Fetch failed (' + res.status + '): ' + t); }
         allThumbnails = await res.json();
         document.getElementById('loadingState').style.display = 'none';
         renderAll();
       } catch (err) {
-        console.error('Dashboard error:', err);
-        document.getElementById('loadingState').innerHTML =
-          '<span style="color:#FF4444;">' + err.message + '</span>';
+        console.error(err);
+        document.getElementById('loadingState').innerHTML = '<span style="color:#FF4444;">' + err.message + '</span>';
       }
     }
 
-    // ===== FILTER + SEARCH =====
+    // ===== FILTERS =====
     function getFilteredThumbnails() {
+      var dateFrom = document.getElementById('dateFrom').value;
+      var dateTo = document.getElementById('dateTo').value;
       return allThumbnails.filter(function(t) {
-        // Category filter
         if (currentFilter !== 'all' && t.category !== currentFilter) return false;
-        // Search filter
         if (searchQuery && !(t.title || '').toLowerCase().includes(searchQuery)) return false;
+        if (dateFrom && t.created_at && t.created_at.substring(0, 10) < dateFrom) return false;
+        if (dateTo && t.created_at && t.created_at.substring(0, 10) > dateTo) return false;
         return true;
       });
     }
 
-    // ===== SET FILTER =====
     function setFilter(filter) {
       currentFilter = filter;
-
-      // Update active pill
-      document.querySelectorAll('.filter-pill').forEach(function(pill) {
-        pill.classList.toggle('active', pill.dataset.filter === filter);
-      });
-
+      document.querySelectorAll('.filter-pill').forEach(function(p) { p.classList.toggle('active', p.dataset.filter === filter); });
       renderAll();
+    }
+
+    function clearDateFilter() {
+      document.getElementById('dateFrom').value = '';
+      document.getElementById('dateTo').value = '';
+      renderAll();
+    }
+
+    // ===== SELECTION =====
+    function toggleSelect(id) {
+      if (selectedIds.has(id)) selectedIds.delete(id); else selectedIds.add(id);
+      var card = document.getElementById('card-' + id);
+      var cb = card.querySelector('.card-checkbox');
+      card.classList.toggle('selected', selectedIds.has(id));
+      cb.classList.toggle('checked', selectedIds.has(id));
+      updateBulkBar();
+    }
+
+    function deselectAll() {
+      selectedIds.clear();
+      document.querySelectorAll('.thumb-card.selected').forEach(function(c) { c.classList.remove('selected'); });
+      document.querySelectorAll('.card-checkbox.checked').forEach(function(c) { c.classList.remove('checked'); });
+      updateBulkBar();
+    }
+
+    function updateBulkBar() {
+      var bar = document.getElementById('bulkBar');
+      var count = selectedIds.size;
+      document.getElementById('bulkCount').textContent = count;
+      bar.classList.toggle('visible', count > 0);
+    }
+
+    async function applyBulkStatus() {
+      var newCat = document.getElementById('bulkSelect').value;
+      if (!newCat) { showToast('Select a status first', 'error'); return; }
+      if (selectedIds.size === 0) return;
+
+      var ids = Array.from(selectedIds);
+      var idsParam = 'id=in.(' + ids.join(',') + ')';
+
+      try {
+        var res = await fetch(BASE_URL + '/rest/v1/thumbnails?' + idsParam, {
+          method: 'PATCH', headers: WRITE_HEADERS,
+          body: JSON.stringify({ category: newCat })
+        });
+        if (!res.ok) { var t = await res.text(); throw new Error('Bulk update failed: ' + t); }
+
+        ids.forEach(function(id) {
+          var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
+          if (thumb) thumb.category = newCat;
+        });
+
+        showToast(ids.length + ' thumbnails updated to "' + newCat + '"', 'success');
+        selectedIds.clear();
+        document.getElementById('bulkSelect').value = '';
+        renderAll();
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, 'error');
+      }
+    }
+
+    // ===== REPLACE IMAGE =====
+    function triggerReplace(id) {
+      var input = document.getElementById('fileInput-' + id);
+      input.click();
+    }
+
+    async function replaceImage(id, fileInput) {
+      var file = fileInput.files[0];
+      if (!file) return;
+
+      var card = document.getElementById('card-' + id);
+      var imgWrapper = card.querySelector('.card-image-wrapper');
+
+      // Show loading overlay
+      var overlay = document.createElement('div');
+      overlay.className = 'replacing-overlay';
+      overlay.innerHTML = '<div class="spinner"></div>';
+      imgWrapper.appendChild(overlay);
+
+      try {
+        // Upload new file to storage
+        var timestamp = Date.now();
+        var cleanName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+        var storagePath = 'replaced/' + timestamp + '_' + cleanName;
+
+        var uploadRes = await fetch(BASE_URL + '/storage/v1/object/thumbnails/' + storagePath, {
+          method: 'POST',
+          headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': file.type },
+          body: file
+        });
+
+        if (!uploadRes.ok) { var t = await uploadRes.text(); throw new Error('Upload failed: ' + t); }
+
+        // Get public URL
+        var newUrl = BASE_URL + '/storage/v1/object/public/thumbnails/' + storagePath;
+
+        // Update database
+        var patchRes = await fetch(BASE_URL + '/rest/v1/thumbnails?id=eq.' + id, {
+          method: 'PATCH', headers: WRITE_HEADERS,
+          body: JSON.stringify({ image_url: newUrl })
+        });
+
+        if (!patchRes.ok) { var t2 = await patchRes.text(); throw new Error('DB update failed: ' + t2); }
+
+        // Update local data and UI
+        var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
+        if (thumb) thumb.image_url = newUrl;
+
+        var img = card.querySelector('.card-image');
+        img.src = newUrl;
+
+        showToast('Image replaced successfully', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, 'error');
+      } finally {
+        overlay.remove();
+        fileInput.value = '';
+      }
     }
 
     // ===== FORMAT DATE =====
     function formatDate(dateStr) {
       if (!dateStr) return 'Unknown Date';
       var d = new Date(dateStr);
-      return d.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+      return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     }
+    function getDateKey(dateStr) { return dateStr ? dateStr.substring(0, 10) : 'unknown'; }
 
-    // Get just the date part (YYYY-MM-DD) for grouping
-    function getDateKey(dateStr) {
-      if (!dateStr) return 'unknown';
-      return dateStr.substring(0, 10);
-    }
-
-    // ===== RENDER ALL =====
+    // ===== RENDER =====
     function renderAll() {
       var filtered = getFilteredThumbnails();
       var content = document.getElementById('mainContent');
-
-      // Update count
-      var countText = filtered.length === 1 ? '1 thumbnail' : filtered.length + ' thumbnails';
-      document.getElementById('thumbnailCount').textContent = countText;
-
-      // Clear previous content (keep loading state hidden)
+      document.getElementById('thumbnailCount').textContent = filtered.length + ' thumbnail' + (filtered.length !== 1 ? 's' : '');
       content.innerHTML = '';
 
-      if (filtered.length === 0) {
-        content.innerHTML = '<div class="empty-state">No thumbnails found.</div>';
-        return;
-      }
+      if (filtered.length === 0) { content.innerHTML = '<div class="empty-state">No thumbnails found.</div>'; return; }
 
-      // Group by date
-      var groups = {};
-      var groupOrder = [];
-
+      var groups = {}, groupOrder = [];
       filtered.forEach(function(t) {
         var key = getDateKey(t.created_at);
-        if (!groups[key]) {
-          groups[key] = [];
-          groupOrder.push(key);
-        }
+        if (!groups[key]) { groups[key] = []; groupOrder.push(key); }
         groups[key].push(t);
       });
 
-      // Render each group
       groupOrder.forEach(function(key) {
         var group = document.createElement('div');
         group.className = 'date-group';
-
         var header = document.createElement('div');
         header.className = 'date-header';
         header.textContent = formatDate(key);
@@ -626,100 +528,116 @@
 
         var grid = document.createElement('div');
         grid.className = 'thumb-grid';
-
-        groups[key].forEach(function(t) {
-          grid.appendChild(createCard(t));
-        });
-
+        groups[key].forEach(function(t) { grid.appendChild(createCard(t)); });
         group.appendChild(grid);
         content.appendChild(group);
       });
+
+      updateBulkBar();
     }
 
     // ===== CREATE CARD =====
     function createCard(thumb) {
       var card = document.createElement('div');
-      card.className = 'thumb-card';
+      card.className = 'thumb-card' + (selectedIds.has(String(thumb.id)) ? ' selected' : '');
       card.id = 'card-' + thumb.id;
-
       var category = thumb.category || 'new';
-      var statusClass = 'status-' + category;
+      var isChecked = selectedIds.has(String(thumb.id));
 
       card.innerHTML =
         '<div class="card-image-wrapper">' +
-          '<img class="card-image" src="' + (thumb.image_url || '') + '" alt="' + (thumb.title || 'Thumbnail') + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+          '<img class="card-image" src="' + (thumb.image_url || '') + '" alt="' + (thumb.title || '') + '" loading="lazy" onerror="this.style.display=\'none\'">' +
+          '<div class="card-checkbox' + (isChecked ? ' checked' : '') + '" onclick="toggleSelect(\'' + thumb.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>' +
+          '</div>' +
+          '<button class="replace-btn" onclick="triggerReplace(\'' + thumb.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>' +
+            'Replace' +
+          '</button>' +
+          '<input type="file" class="hidden-file-input" id="fileInput-' + thumb.id + '" accept="image/*" onchange="replaceImage(\'' + thumb.id + '\', this)">' +
           '<div class="check-overlay" id="check-' + thumb.id + '">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>' +
           '</div>' +
         '</div>' +
         '<div class="card-body">' +
           '<div class="card-title">' + (thumb.title || 'Untitled') + '</div>' +
           '<div class="card-meta">' +
-            '<span class="status-badge ' + statusClass + '">' + category + '</span>' +
+            '<span class="status-badge status-' + category + '">' + category + '</span>' +
           '</div>' +
-          '<div class="status-select-wrapper">' +
+          '<div>' +
             '<select class="status-select" data-id="' + thumb.id + '" onchange="updateStatus(this)">' +
               '<option value="new"' + (category === 'new' ? ' selected' : '') + '>New</option>' +
               '<option value="corrected"' + (category === 'corrected' ? ' selected' : '') + '>Corrected</option>' +
               '<option value="stable"' + (category === 'stable' ? ' selected' : '') + '>Stable</option>' +
-              '<option value="discarded"' + (category === 'discarded' ? ' selected' : '') + '>Discarded</option>' +
+              '<option value="hold"' + (category === 'hold' ? ' selected' : '') + '>Hold</option>' +
             '</select>' +
           '</div>' +
+          '<button class="delete-btn" onclick="deleteThumbnail(\'' + thumb.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>' +
+            'Delete' +
+          '</button>' +
         '</div>';
-
       return card;
     }
 
-    // ===== UPDATE STATUS =====
+    // ===== UPDATE SINGLE STATUS =====
     async function updateStatus(selectEl) {
       var id = selectEl.dataset.id;
-      var newCategory = selectEl.value;
+      var newCat = selectEl.value;
       var card = document.getElementById('card-' + id);
 
       try {
-        var url = BASE_URL + '?id=eq.' + id;
-        var res = await fetch(url, {
-          method: 'PATCH',
-          headers: WRITE_HEADERS,
-          body: JSON.stringify({ category: newCategory })
+        var res = await fetch(BASE_URL + '/rest/v1/thumbnails?id=eq.' + id, {
+          method: 'PATCH', headers: WRITE_HEADERS,
+          body: JSON.stringify({ category: newCat })
         });
+        if (!res.ok) { var t = await res.text(); throw new Error('Update failed (' + res.status + '): ' + t); }
 
-        if (!res.ok) throw new Error('Update failed: ' + res.status);
-
-        // Update local data
         var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
-        if (thumb) thumb.category = newCategory;
+        if (thumb) thumb.category = newCat;
 
-        // Update the badge in the card
         var badge = card.querySelector('.status-badge');
-        badge.className = 'status-badge status-' + newCategory;
-        badge.textContent = newCategory;
+        badge.className = 'status-badge status-' + newCat;
+        badge.textContent = newCat;
 
-        // Show success animation
         card.classList.remove('update-success');
-        // Force reflow to restart animation
         void card.offsetWidth;
         card.classList.add('update-success');
 
         var checkEl = document.getElementById('check-' + id);
         checkEl.classList.add('show');
-        setTimeout(function() {
-          checkEl.classList.remove('show');
-        }, 1200);
+        setTimeout(function() { checkEl.classList.remove('show'); }, 1200);
 
-        showToast('Status updated to "' + newCategory + '"', 'success');
+        showToast('Status updated to "' + newCat + '"', 'success');
 
-        // If we are filtering by a category and the item no longer matches, re-render after a short delay
-        if (currentFilter !== 'all' && newCategory !== currentFilter) {
+        if (currentFilter !== 'all' && newCat !== currentFilter) {
           setTimeout(renderAll, 800);
         }
-
       } catch (err) {
         console.error(err);
-        showToast('Failed to update status', 'error');
-        // Revert select to previous value
+        showToast(err.message, 'error');
         var thumb = allThumbnails.find(function(t) { return String(t.id) === String(id); });
         if (thumb) selectEl.value = thumb.category;
+      }
+    }
+
+    // ===== DELETE THUMBNAIL =====
+    async function deleteThumbnail(id) {
+      if (!confirm('Delete this thumbnail permanently?')) return;
+
+      try {
+        var res = await fetch(BASE_URL + '/rest/v1/thumbnails?id=eq.' + id, {
+          method: 'DELETE', headers: WRITE_HEADERS
+        });
+        if (!res.ok) { var t = await res.text(); throw new Error('Delete failed: ' + t); }
+
+        allThumbnails = allThumbnails.filter(function(t) { return String(t.id) !== String(id); });
+        selectedIds.delete(String(id));
+        renderAll();
+        showToast('Thumbnail deleted', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast(err.message, 'error');
       }
     }
 
@@ -729,12 +647,8 @@
       toast.textContent = message;
       toast.className = 'toast' + (type === 'success' ? ' toast-success' : '');
       toast.classList.add('show');
-
-      setTimeout(function() {
-        toast.classList.remove('show');
-      }, 2000);
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
     }
   </script>
-
 </body>
 </html>
