@@ -4,6 +4,7 @@
  * Usage:
  *   node upload.js /path/to/folder --new        (uploads as "new" thumbnails)
  *   node upload.js /path/to/folder --corrected  (uploads as "corrected" thumbnails)
+ *   node upload.js /path/to/folder --stable     (uploads as "stable" / approved thumbnails)
  *   node upload.js /path/to/folder              (defaults to "new")
  *
  * Supported formats: .jpg, .jpeg, .png, .webp
@@ -125,6 +126,6 @@ async function uploadThumbnails(folderPath, category) {
 // Parse arguments
 const args = process.argv.slice(2);
 const folderPath = args.find(a => !a.startsWith('--'));
-const category = args.includes('--corrected') ? 'corrected' : 'new';
+const category = args.includes('--corrected') ? 'corrected' : args.includes('--stable') ? 'stable' : 'new';
 
 uploadThumbnails(folderPath, category);

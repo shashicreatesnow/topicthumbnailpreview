@@ -282,6 +282,11 @@
       color: #fff;
     }
 
+    .thumb-category-label.cat-stable {
+      background: #FFD700;
+      color: #000;
+    }
+
     /* Badge */
     .thumb-badge {
       position: absolute;
@@ -561,8 +566,14 @@
         ? `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> ${thumb.views}`
         : '';
 
-      const catClass = thumb.category === 'corrected' ? 'cat-corrected' : 'cat-new';
-      const catLabel = thumb.category === 'corrected' ? 'Corrected' : 'New';
+      const catMap = {
+        'new': { cls: 'cat-new', label: 'New' },
+        'corrected': { cls: 'cat-corrected', label: 'Corrected' },
+        'stable': { cls: 'cat-stable', label: 'Stable' }
+      };
+      const cat = catMap[thumb.category] || catMap['new'];
+      const catClass = cat.cls;
+      const catLabel = cat.label;
 
       card.innerHTML = `
         <div class="thumb-image-wrapper">
