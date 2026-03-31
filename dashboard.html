@@ -247,6 +247,108 @@
       border-radius: 12px;
     }
     .replacing-overlay .spinner { margin: 0; }
+
+    /* ===== UPLOAD SECTION ===== */
+    .upload-toggle-btn {
+      background: #00C9A7; color: #000; border: none; border-radius: 10px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; display: flex; align-items: center; gap: 8px;
+    }
+    .upload-toggle-btn:hover { background: #00ddb8; }
+    .upload-toggle-btn svg { width: 18px; height: 18px; }
+
+    .upload-panel {
+      display: none; background: #111; border: 1px solid #222; border-radius: 16px;
+      padding: 24px; margin-bottom: 28px;
+    }
+    .upload-panel.visible { display: block; }
+
+    .upload-panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .upload-panel-title { font-size: 18px; font-weight: 700; }
+    .upload-close-btn {
+      background: none; border: 1px solid #333; border-radius: 8px;
+      padding: 6px 12px; color: #999; font-size: 12px; font-family: inherit; cursor: pointer;
+    }
+    .upload-close-btn:hover { color: #fff; border-color: #555; }
+
+    .drop-zone {
+      border: 2px dashed #333; border-radius: 14px; padding: 40px 20px;
+      text-align: center; color: #555; font-size: 15px; cursor: pointer;
+      transition: all 0.2s; margin-bottom: 20px;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #00C9A7; color: #00C9A7; background: rgba(0,201,167,0.05);
+    }
+    .drop-zone svg { width: 40px; height: 40px; margin-bottom: 12px; opacity: 0.4; }
+    .drop-zone p { margin-top: 8px; font-size: 12px; color: #444; }
+
+    .upload-controls {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .upload-controls label { font-size: 13px; color: #888; font-weight: 500; }
+    .upload-status-select {
+      appearance: none; -webkit-appearance: none; background: #1A1A1A;
+      border: 1px solid #333; border-radius: 8px; padding: 8px 30px 8px 12px;
+      color: #fff; font-size: 13px; font-family: inherit; cursor: pointer; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23777'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+    }
+    .upload-all-btn {
+      background: #00C9A7; color: #000; border: none; border-radius: 8px;
+      padding: 10px 24px; font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; margin-left: auto;
+    }
+    .upload-all-btn:hover { background: #00ddb8; }
+    .upload-all-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    .upload-preview-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+    .upload-item {
+      background: #0A0A0A; border: 1px solid #222; border-radius: 12px;
+      overflow: hidden; position: relative;
+    }
+    .upload-item.uploading { opacity: 0.5; pointer-events: none; }
+    .upload-item.uploaded { border-color: #00C9A7; }
+    .upload-item-img {
+      width: 100%; aspect-ratio: 1/2; object-fit: cover; display: block;
+    }
+    .upload-item-body { padding: 8px 10px 10px; }
+    .upload-item-name {
+      font-size: 11px; color: #aaa; margin-bottom: 6px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .upload-item-select {
+      appearance: none; -webkit-appearance: none; background: #1A1A1A;
+      border: 1px solid #333; border-radius: 6px; padding: 5px 24px 5px 8px;
+      color: #ccc; font-size: 11px; font-family: inherit; cursor: pointer;
+      outline: none; width: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='%23777'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 6px center;
+    }
+    .upload-item-remove {
+      position: absolute; top: 6px; right: 6px; width: 22px; height: 22px;
+      background: rgba(0,0,0,0.7); border: none; border-radius: 50%;
+      color: #FF4444; font-size: 14px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .upload-item-remove:hover { background: #FF4444; color: #fff; }
+    .upload-item-status {
+      position: absolute; top: 6px; left: 6px; font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 4px; background: #00C9A7; color: #000;
+    }
+    .upload-item.uploaded .upload-item-status { display: block; }
+    .upload-progress {
+      height: 3px; background: #222; border-radius: 2px; margin-top: 6px; overflow: hidden;
+    }
+    .upload-progress-bar {
+      height: 100%; background: #00C9A7; border-radius: 2px; width: 0%;
+      transition: width 0.3s;
+    }
   </style>
 </head>
 <body>
@@ -254,7 +356,43 @@
   <div class="dashboard">
     <div class="top-bar">
       <h1 class="dashboard-title">Thumbnail Dashboard</h1>
-      <a href="index.html" class="back-link">&larr; Back to Preview</a>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="upload-toggle-btn" onclick="toggleUploadPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+          Upload
+        </button>
+        <a href="index.html" class="back-link">&larr; Back to Preview</a>
+      </div>
+    </div>
+
+    <!-- UPLOAD PANEL -->
+    <div class="upload-panel" id="uploadPanel">
+      <div class="upload-panel-header">
+        <div class="upload-panel-title">Upload Thumbnails</div>
+        <button class="upload-close-btn" onclick="toggleUploadPanel()">Close</button>
+      </div>
+
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('batchFileInput').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        <div>Drop images here or click to browse</div>
+        <p>Supports JPG, PNG, WebP</p>
+      </div>
+      <input type="file" id="batchFileInput" multiple accept="image/*" style="display:none" onchange="handleFileSelect(this.files)">
+
+      <div class="upload-controls" id="uploadControls" style="display:none;">
+        <label>Set all to:</label>
+        <select class="upload-status-select" id="uploadGlobalStatus" onchange="applyGlobalStatus()">
+          <option value="">Individual</option>
+          <option value="new">New</option>
+          <option value="corrected">Corrected</option>
+          <option value="stable">Stable</option>
+          <option value="hold">Hold</option>
+        </select>
+        <span id="uploadFileCount" style="font-size:13px;color:#666;"></span>
+        <button class="upload-all-btn" id="uploadAllBtn" onclick="uploadAll()">Upload All</button>
+      </div>
+
+      <div class="upload-preview-grid" id="uploadPreviewGrid"></div>
     </div>
 
     <div class="search-wrapper">
@@ -639,6 +777,161 @@
         console.error(err);
         showToast(err.message, 'error');
       }
+    }
+
+    // ===== UPLOAD PANEL =====
+    var pendingFiles = []; // { file, status, id (temp) }
+
+    function toggleUploadPanel() {
+      var panel = document.getElementById('uploadPanel');
+      panel.classList.toggle('visible');
+    }
+
+    // Drag and drop
+    var dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault(); dropZone.classList.remove('drag-over');
+      handleFileSelect(e.dataTransfer.files);
+    });
+
+    function handleFileSelect(files) {
+      var validExts = ['.jpg', '.jpeg', '.png', '.webp'];
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+        var ext = '.' + f.name.split('.').pop().toLowerCase();
+        if (!validExts.includes(ext)) continue;
+        pendingFiles.push({ file: f, status: 'new', tempId: Date.now() + '_' + i });
+      }
+      renderUploadPreview();
+    }
+
+    function renderUploadPreview() {
+      var grid = document.getElementById('uploadPreviewGrid');
+      var controls = document.getElementById('uploadControls');
+      grid.innerHTML = '';
+
+      if (pendingFiles.length === 0) { controls.style.display = 'none'; return; }
+      controls.style.display = 'flex';
+      document.getElementById('uploadFileCount').textContent = pendingFiles.length + ' file' + (pendingFiles.length !== 1 ? 's' : '');
+
+      pendingFiles.forEach(function(pf, idx) {
+        var item = document.createElement('div');
+        item.className = 'upload-item';
+        item.id = 'upload-' + pf.tempId;
+
+        var imgUrl = URL.createObjectURL(pf.file);
+        item.innerHTML =
+          '<img class="upload-item-img" src="' + imgUrl + '">' +
+          '<button class="upload-item-remove" onclick="removeUploadItem(' + idx + ')">&times;</button>' +
+          '<div class="upload-item-body">' +
+            '<div class="upload-item-name">' + pf.file.name + '</div>' +
+            '<select class="upload-item-select" data-idx="' + idx + '" onchange="updateItemStatus(' + idx + ', this.value)">' +
+              '<option value="new"' + (pf.status === 'new' ? ' selected' : '') + '>New</option>' +
+              '<option value="corrected"' + (pf.status === 'corrected' ? ' selected' : '') + '>Corrected</option>' +
+              '<option value="stable"' + (pf.status === 'stable' ? ' selected' : '') + '>Stable</option>' +
+              '<option value="hold"' + (pf.status === 'hold' ? ' selected' : '') + '>Hold</option>' +
+            '</select>' +
+            '<div class="upload-progress"><div class="upload-progress-bar" id="progress-' + pf.tempId + '"></div></div>' +
+          '</div>';
+        grid.appendChild(item);
+      });
+    }
+
+    function removeUploadItem(idx) {
+      pendingFiles.splice(idx, 1);
+      renderUploadPreview();
+    }
+
+    function updateItemStatus(idx, val) {
+      pendingFiles[idx].status = val;
+    }
+
+    function applyGlobalStatus() {
+      var val = document.getElementById('uploadGlobalStatus').value;
+      if (!val) return;
+      pendingFiles.forEach(function(pf) { pf.status = val; });
+      renderUploadPreview();
+      document.getElementById('uploadGlobalStatus').value = val;
+    }
+
+    async function uploadAll() {
+      if (pendingFiles.length === 0) return;
+      var btn = document.getElementById('uploadAllBtn');
+      btn.disabled = true;
+      btn.textContent = 'Uploading...';
+
+      var uploaded = 0;
+      var failed = 0;
+      var BADGES = ['New Episode', 'Newly Added', 'Trending', 'Popular'];
+
+      for (var i = 0; i < pendingFiles.length; i++) {
+        var pf = pendingFiles[i];
+        var item = document.getElementById('upload-' + pf.tempId);
+        var progressBar = document.getElementById('progress-' + pf.tempId);
+        item.classList.add('uploading');
+        progressBar.style.width = '30%';
+
+        try {
+          var timestamp = Date.now();
+          var cleanName = pf.file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          var storagePath = pf.status + '/' + timestamp + '_' + cleanName;
+
+          // Upload to storage
+          var uploadRes = await fetch(BASE_URL + '/storage/v1/object/thumbnails/' + storagePath, {
+            method: 'POST',
+            headers: { 'apikey': API_KEY, 'Authorization': 'Bearer ' + API_KEY, 'Content-Type': pf.file.type },
+            body: pf.file
+          });
+          progressBar.style.width = '60%';
+
+          if (!uploadRes.ok) throw new Error('Storage upload failed');
+
+          var newUrl = BASE_URL + '/storage/v1/object/public/thumbnails/' + storagePath;
+          var ext = pf.file.name.split('.').pop();
+          var title = pf.file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ').replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+
+          // Insert into database
+          var dbRes = await fetch(BASE_URL + '/rest/v1/thumbnails', {
+            method: 'POST',
+            headers: WRITE_HEADERS,
+            body: JSON.stringify({
+              title: title,
+              image_url: newUrl,
+              badge: BADGES[Math.floor(Math.random() * BADGES.length)],
+              episodes: Math.floor(Math.random() * 20) + 3,
+              views: (Math.floor(Math.random() * 90) + 5) + 'k',
+              category: pf.status
+            })
+          });
+          progressBar.style.width = '100%';
+
+          if (!dbRes.ok) throw new Error('DB insert failed');
+
+          item.classList.remove('uploading');
+          item.classList.add('uploaded');
+          uploaded++;
+        } catch (err) {
+          console.error(err);
+          item.classList.remove('uploading');
+          progressBar.style.width = '0%';
+          progressBar.parentElement.style.background = '#FF4444';
+          failed++;
+        }
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Upload All';
+      showToast(uploaded + ' uploaded' + (failed > 0 ? ', ' + failed + ' failed' : ''), uploaded > 0 ? 'success' : 'error');
+
+      // Clear uploaded items and refresh
+      pendingFiles = pendingFiles.filter(function(_, idx) {
+        var item = document.querySelectorAll('.upload-item')[idx];
+        return item && !item.classList.contains('uploaded');
+      });
+      renderUploadPreview();
+      loadAllThumbnails();
     }
 
     // ===== TOAST =====
